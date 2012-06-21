@@ -1,0 +1,18 @@
+%!TEX root = ../main.tex
+
+Apesar do esforço dispendido em pesquisas sobre o \textit{DNS} para redes \textit{MANET}, ainda não existe concenso sobre qual o melhor modelo a ser adotado. Enquanto que algumas propostas exigem modificações drásticas no protocolo de resolução de nomes já existente -- impedindo assim que implementações atuais possam ser reutilizadas -- outras deixam muito a desejar no quesito de energia consumida, sobrecarregando um nodo da rede e usando-o como servidor.
+
+\subsection{Bonjour}
+
+  Criado pela \textit{Apple} primeiramente com o nome \textit{Rendezvous}, o \textit{Bonjour} implementa o \textit{Zero Configuration Network} (\textit{zeroconf}) \cite{zeroconf}, que é uma especificação que engloba vários serviços para redes com configuração dinâmica, entre eles, o \textit{Multicast DNS} (\textit{mDNS}) \cite{mdns}. Apesar do seu código ser aberto, sua documentação é limitada, portanto as especificações descritas aqui são conclusões tiradas a partir de testes realizados com o protocolo.
+  
+  \subsubsection{Multicast DNS}
+  
+    O protocolo \textit{Bonjour} é completamente reativo, e isso se aplica também à resolução dos nomes na rede, usando o \textit{mDNS}. Quando uma nova máquina entra na rede, ela anuncia via \textit{broadcast} seu nome, seu endereço \emph{IP} e os serviços que disponibiliza. As outras máquinas da rede atualizam sua tabela de tradução de nomes e serviços. Esse método de associar nomes e serviços é chamado \textit{DNS Service Discovery} (\textit{DNS--SD}) \cite{dnssd}. Caso o nome escolhido pela nova máquina já exista na rede, essa máquina tem um número adicionado ao final do seu nome. Por exemplo, se um nó tenta entrar na rede com o nome \emph{foo}, mas esse nome já está em uso, uma mensagem é enviada a essa máquina avisando que seu nome está sendo alterado para \emph{foo1}.
+    
+    Uma máquina nova na rede tem sua tabela de tradução vazia, e quando precisar de algum nome ou serviço envia sua requisição para toda a rede, via \textit{multicast}. Toda máquina na rede que roda o protocolo \textit{Bonjour} é um servidor de nomes, e pode responder a essa requisição se tiver a tradução requisitada. A nova máquina atualiza sua tabela com os resultados recebidos.
+    
+    Se uma máquina adicionar algum serviço na rede, deve fazer um anúncio via \textit{multicast} para alertar as outras máquinas. No entanto, não há nenhum aviso se algum serviço for retirado, assim como não há nenhuma regra no protocolo para um nó sair da rede. Apesar de todas as máquinas enviarem anúncios periódicos dos serviços que disponibilizam, as entradas nas tabelas não possuem um \textit{time--to--live}, de modo que os serviços e nomes de máquinas que não estão mais na rede persistem indefinidamente.
+
+
+\subsection{Modified Centralized DNS}
