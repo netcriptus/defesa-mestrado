@@ -1,34 +1,123 @@
 %!TEX root = ../main.tex
 
-Apesar do esforço dispendido em pesquisas sobre o \textit{DNS} para redes \textit{MANET}, ainda não existe concenso sobre qual o melhor modelo a ser adotado. Enquanto que algumas propostas exigem modificações drásticas no protocolo de resolução de nomes já existente -- impedindo assim que implementações atuais possam ser reutilizadas -- outras deixam muito a desejar no quesito de energia consumida, sobrecarregando um nodo da rede e usando-o como servidor.
+Apesar do esforço dispendido em pesquisas sobre o \textit{DNS} para redes 
+\textit{MANET}, ainda não existe concenso sobre qual o melhor modelo a ser 
+adotado. Enquanto que algumas propostas exigem modificações drásticas no 
+protocolo de resolução de nomes já existente -- impedindo assim que 
+implementações atuais possam ser reutilizadas -- outras deixam muito a desejar 
+no quesito de energia consumida, sobrecarregando um nodo da rede e usando-o como
+ servidor.
 
-Existem três casos principais para os quais as especificações de DNS para redes \textit{MANET} precisam encontrar uma solução. O primeiro é o caso de não existir nenhum servidor, ou existirem múltiplos servidores na rede. Cabe ao protocolo definir como o primeiro servidor deve ser criado, e como vai operar em relação aos demais, e se pode haver mais de um servidor. O segundo caso diz respeito à configuração dinâmica; diferente das redes com infraestrutura, não é possível ter um \textit{Master File} com nomes e traduções à disposição do Servidor de Nomes. Além disso, nomes e endereços associados aos nomes podem mudar muito em uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de \textit{MANETs} pode ocorrer tanto no momento da escolha de nomes quanto na fusão de duas redes -- segundo as especificações do DNS \cite{rfc1035}, cada identificador dentro de uma rede deve ser único. A seguir são descritos os protocolos estudados e qual a sua solução para os problemas descritos.
+Existem três casos principais para os quais as especificações de DNS para redes 
+\textit{MANET} precisam encontrar uma solução. O primeiro é o caso de não existir 
+nenhum servidor, ou existirem múltiplos servidores na rede. Cabe ao protocolo 
+definir como o primeiro servidor deve ser criado, e como vai operar em relação 
+aos demais, e se pode haver mais de um servidor. O segundo caso diz respeito à 
+configuração dinâmica; diferente das redes com infraestrutura, não é possível 
+ter um \textit{Master File} com nomes e traduções à disposição do Servidor de 
+Nomes. Além disso, nomes e endereços associados aos nomes podem mudar muito em 
+uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de 
+\textit{MANETs} pode ocorrer tanto no momento da escolha de nomes quanto na fusão
+ de duas redes -- segundo as especificações do DNS \cite{rfc1035}, cada 
+ identificador dentro de uma rede deve ser único. A seguir são descritos os 
+ protocolos estudados e qual a sua solução para os problemas descritos.
 
 \subsection{Bonjour}
+\label{Bonjour}
 
-  Criado pela \textit{Apple} primeiramente com o nome \textit{Rendezvous}, o \textit{Bonjour} implementa o \textit{Zero Configuration Network} (\textit{zeroconf}) \cite{zeroconf}, que é uma especificação que engloba vários serviços para redes com configuração dinâmica, entre eles, o \textit{Multicast DNS} (\textit{mDNS}) \cite{mdns}. Apesar do seu código ser aberto, sua documentação é limitada, portanto as especificações descritas aqui são conclusões tiradas a partir de testes realizados com o protocolo.
+    Criado pela \textit{Apple} primeiramente com o nome \textit{Rendezvous}, o 
+    \textit{Bonjour} implementa o \textit{Zero Configuration Network} 
+    (\textit{zeroconf}) \cite{zeroconf}, que é uma especificação que engloba vários
+    serviços para redes com configuração dinâmica, entre eles, o 
+    \textit{Multicast DNS} (\textit{mDNS}) \cite{mdns}. Apesar do seu código ser 
+    aberto, sua documentação é limitada, portanto as especificações descritas aqui
+    são conclusões tiradas a partir de testes realizados com o protocolo.
   
-  \subsubsection{Multicast DNS}
+    \subsubsection{Multicast DNS}
+    \label{MDNS}
   
-    O protocolo \textit{Bonjour} é completamente reativo, e isso se aplica também à resolução dos nomes na rede, usando o \textit{mDNS}. Quando uma nova máquina entra na rede, ela anuncia via \textit{broadcast} seu nome, seu endereço \emph{IP} e os serviços que disponibiliza. As outras máquinas da rede atualizam suas tabelas de tradução de nomes e serviços. Esse método de associar nomes e serviços é chamado \textit{DNS Service Discovery} (\textit{DNS--SD}) \cite{dnssd}. Caso o nome escolhido pela nova máquina já exista na rede, essa máquina tem um número adicionado ao final do seu nome. Por exemplo, se um nó tenta entrar na rede com o nome \emph{foo}, mas esse nome já está em uso, uma mensagem é enviada a essa máquina avisando que seu nome está sendo alterado para \emph{foo1}.
-    
-    Uma máquina nova na rede tem sua tabela de tradução vazia, e quando precisar de algum nome ou serviço envia sua requisição para toda a rede, via \textit{multicast}. Toda máquina na rede que roda o protocolo \textit{Bonjour} é um servidor de nomes, e pode responder a essa requisição se tiver a tradução requisitada. A nova máquina atualiza sua tabela com os resultados recebidos.
-    
-    Se uma máquina adicionar algum serviço na rede, deve fazer um anúncio via \textit{multicast} para alertar as outras máquinas. No entanto, não há nenhum aviso se algum serviço for retirado, assim como não há nenhuma regra no protocolo para um nó sair da rede. Apesar de todas as máquinas enviarem anúncios periódicos dos serviços que disponibilizam, as entradas nas tabelas não possuem um \textit{time--to--live}, de modo que os serviços e nomes de máquinas que não estão mais na rede persistem indefinidamente.
-    
-    Essa abordagem funciona muito bem para redes pequenas, mas pode apresentar problemas de escalabilidade, não é apropriado para equipamentos com processamento e memória limitados. Por limitações nos testes, não sabemos se esse protocolo funciona quando é necessário fazer roteamento, isto é, quando a fonte e o destino das mensagens estão a mais de um salto de distância. O protocolo \textit{Bonjour} foi feito visando ambientes corporativos médios, por isso não existe a preocupação em escalabilidade.
+        O protocolo \textit{Bonjour} é completamente reativo, e isso se aplica também
+        à resolução dos nomes na rede, usando o \textit{mDNS}. Quando uma nova máquina
+        entra na rede, ela anuncia via \textit{broadcast} seu nome, seu endereço 
+        \emph{IP} e os serviços que disponibiliza. As outras máquinas da rede 
+        atualizam suas tabelas de tradução de nomes e serviços. Esse método de 
+        associar nomes e serviços é chamado \textit{DNS Service Discovery} 
+        (\textit{DNS--SD}) \cite{dnssd}. Caso o nome escolhido pela nova máquina 
+        já exista na rede, essa máquina tem um número adicionado ao final do seu 
+        nome. Por exemplo, se um nó tenta entrar na rede com o nome \emph{foo}, mas
+        esse nome já está em uso, uma mensagem é enviada a essa máquina avisando 
+        que seu nome está sendo alterado para \emph{foo1}.
+
+        Uma máquina nova na rede tem sua tabela de tradução vazia, e quando 
+        precisar de algum nome ou serviço envia sua requisição para toda a rede,
+        via \textit{multicast}. Toda máquina na rede que roda o protocolo
+        \textit{Bonjour} é um servidor de nomes, e pode responder a essa 
+        requisição se tiver a tradução requisitada. A nova máquina atualiza sua 
+        tabela com os resultados recebidos.
+
+        Se uma máquina adicionar algum serviço na rede, deve fazer um anúncio via
+        \textit{multicast} para alertar as outras máquinas. No entanto, não há 
+        nenhum aviso se algum serviço for retirado, assim como não há nenhuma 
+        regra no protocolo para um nó sair da rede. Apesar de todas as máquinas 
+        enviarem anúncios periódicos dos serviços que disponibilizam, as entradas
+        nas tabelas não possuem um \textit{time--to--live}, de modo que os serviços
+        e nomes de máquinas que não estão mais na rede persistem indefinidamente.
+
+        Essa abordagem funciona muito bem para redes pequenas, mas pode apresentar
+        problemas de escalabilidade, não é apropriado para equipamentos com 
+        processamento e memória limitados. Por limitações nos testes, não sabemos
+        se esse protocolo funciona quando é necessário fazer roteamento, isto é,
+        quando a fonte e o destino das mensagens estão a mais de um salto de 
+        distância. O protocolo \textit{Bonjour} foi feito visando ambientes 
+        corporativos médios, por isso não existe a preocupação em escalabilidade.
 
 
 \subsection{Modified Centralized DNS}
+\label{MCDNS}
 
-  O \textit{Modified Centralized DNS}, ou \textit{Manet DNS}, como é referenciado no seu artigo \cite{mcdns}, propõe implementar exatamente o que geralmente é evitado em projetos de protocolos para redes MANET: uma solução centralizada. O artigo alega que as afirmações de que um protocolo centralizado em uma MANET apenas apontam uma tendência esperada, mas que essa proposta nunca foi testada.
+    O \textit{Modified Centralized DNS}, ou \textit{Manet DNS}, como é referenciado
+    no seu artigo \cite{mcdns}, propõe implementar exatamente o que geralmente é
+    evitado em projetos de protocolos para redes MANET: uma solução centralizada.
+    O artigo alega que as afirmações de que um protocolo centralizado em uma MANET
+    apenas apontam uma tendência esperada, mas que essa proposta nunca foi testada.
   
-  O \textit{Manet DNS} se assemelha muito ao funcionamento atual do DNS para redes com infraestrutura, apesar de respeitar as normas da rede \textit{Zeroconf} \cite{zeroconf}, o que inclui configuração dinâmica, que no caso acontece sob demanda. Um Servidor de Nomes (NS) só é criado se uma máquina precisar do serviço de tradução de nome e ainda não existir um servidor na rede. Nesse caso, essa máquina se torna um servidor, e deve mandar anúncios periódicos à rede para deixar clara sua presença. Se alguma máquina não receber esse anúncio por um período de tempo, interpreta que não existe mais Servidor de Nomes em seu alcance, seja por quebra da rede -- pela mobilidade dos nós --, ou por que o antigo servidor foi desligado.
+    O \textit{Manet DNS} se assemelha muito ao funcionamento atual do DNS para 
+    redes com infraestrutura, apesar de respeitar as normas da rede \textit{Zeroconf}
+    \cite{zeroconf}, o que inclui configuração dinâmica, que no caso acontece sob
+    demanda. Um Servidor de Nomes (NS) só é criado se uma máquina precisar do 
+    serviço de tradução de nome e ainda não existir um servidor na rede. Nesse 
+    caso, essa máquina se torna um servidor, e deve mandar anúncios periódicos à
+    rede para deixar clara sua presença. Se alguma máquina não receber esse
+    anúncio por um período de tempo, interpreta que não existe mais Servidor de 
+    Nomes em seu alcance, seja por quebra da rede -- pela mobilidade dos nós --,
+    ou por que o antigo servidor foi desligado.
   
-  Quando um NS é criado, a máquina que vai se tornar servidor envia um \textit{broadcast} à rede pedindo que todas as máquinas lhe enviem suas informações. As outras máquinas da rede respondem a essa requisição com seu nome e endereço, via \textit{unicast}, e já registram que existe um NS na rede. Caso exista um conflito de nomes, o NS aceita o nome da primeira máquina que respondeu à requisição, e envia uma mensagem para a segunda máquina pedindo para que escolha outro nome. Esse processo pode se repetir até um dado número de vezes (configurável) e se o conflito persistir, o NS escolhe um nome aleatório para essa máquina.
+    Quando um NS é criado, a máquina que vai se tornar servidor envia um 
+    \textit{broadcast} à rede pedindo que todas as máquinas lhe enviem suas 
+    informações. As outras máquinas da rede respondem a essa requisição com seu 
+    nome e endereço, via \textit{unicast}, e já registram que existe um NS na rede.
+    Caso exista um conflito de nomes, o NS aceita o nome da primeira máquina que
+    respondeu à requisição, e envia uma mensagem para a segunda máquina pedindo
+    para que escolha outro nome. Esse processo pode se repetir até um dado número
+    de vezes (configurável) e se o conflito persistir, o NS escolhe um nome 
+    aleatório para essa máquina.
   
-  No caso de haver mais de um servidor de DNS na rede, os NS existentes precisam chegar a um consenso sobre qual máquina vai continuar com o serviço de tradução de nomes. Essa decisão se dá comparando os IP's dos servidores; assim definindo qual tem maior prioridade sobre os demais. O servidor com maior prioridade recebe a tabela de tradução de nomes dos servidores com menos prioridade, e deve resolver eventuais conflitos de nomes que esa fusão possa causar.
+    No caso de haver mais de um servidor de DNS na rede, os NS existentes precisam
+    chegar a um consenso sobre qual máquina vai continuar com o serviço de tradução
+    de nomes. Essa decisão se dá comparando os IP's dos servidores; assim definindo
+    qual tem maior prioridade sobre os demais. O servidor com maior prioridade recebe
+    a tabela de tradução de nomes dos servidores com menos prioridade, e deve resolver
+    eventuais conflitos de nomes que essa fusão possa causar.
   
-  Se uma máquina \textbf{A}, após conseguir a tradução de uma máquina \textbf{B}, descobrir que \textbf{B} não está mais na rede, \textbf{A} pode enviar essa informação ao servidor que guarda a tradução do nome de \textbf{B}. Se o servidor receber essa informação repetidamente, retira a máquina \textbf{B} de sua tabela de tradução, considera que essa máquina não está mais disponível na rede, e o nome \textbf{B} está livre para ser usado.
+    Se uma máquina \textbf{A}, após conseguir a tradução de uma máquina \textbf{B},
+    descobrir que \textbf{B} não está mais na rede, \textbf{A} pode enviar essa 
+    informação ao servidor que guarda a tradução do nome de \textbf{B}. Se o servidor
+    receber essa informação repetidamente, retira a máquina \textbf{B} de sua 
+    tabela de tradução, considera que essa máquina não está mais disponível na 
+    rede, e o nome \textbf{B} está livre para ser usado.
   
-  Os testes realizados pelo autores do protocolo revelam uma performance melhor em relação ao \textit{Multicast DNS} nos quesitos tempo de resposta e tráfego gerado por mensagens de controle. No entando os números sobre o consumo de energia do servidor não estão disponíveis, e o tempo de execução da simulação -- 100 segundos -- é considerado pequeno para esse tipo de teste.
+    Os testes realizados pelo autores do protocolo revelam uma performance melhor
+    em relação ao \textit{Multicast DNS} nos quesitos tempo de resposta e tráfego
+    gerado por mensagens de controle. No entando os números sobre o consumo de 
+    energia do servidor não estão disponíveis, e o tempo de execução da simulação
+    -- 100 segundos -- é considerado pequeno para esse tipo de teste.
