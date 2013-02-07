@@ -26,9 +26,12 @@ portanto seu desempenho não foi avaliado.
             \item Time to Live (TTL) -- todas as informações são válidas por um 
             tempo máximo \textbf{T}, que depende da mobilidade e volatilidade da
             rede. Quanto mais rápida a rede, menor o tempo \textbf{T}.
+            \item Tabela de traduções -- uma tabela \textit{hash} que guarda o
+            endereço de cada máquina associado a um nome (que não precisa ser único)
+            e uma lista de serviços oferecidos.
         \end{enumerate}
         
-    \subsection{Algoritmo de criação de servidores}
+    \subsubsection{Algoritmo de criação de servidores}
         \begin{enumerate}
             \item Quando uma máquina \textbf{A} precisa traduzir um nome, ela
             busca em sua vizinhança se existe algum servidor de nomes. Se existir,
@@ -36,17 +39,18 @@ portanto seu desempenho não foi avaliado.
             \item Caso não exista servidor, essa máquina \textbf{A} torna-se um 
             servidor de nomes.
             \item \textbf{A} então faz um broadcast em sua vizinhança para montar
-            sua tabela de nomes. As vizinhas de \textbf{A} sabem então que existe
-            um servidor de nomes por um tempo \textbf{T}. Se o nome buscado por
-            \textbf{A} for encontrado, o processo chega ao fim.
+            sua tabela de nomes. Os vizinhos de \textbf{A} sabem que existe um
+            servidor de nomes por um tempo \textbf{T}. Se o nome buscado por
+            \textbf{A} for encontrado, o algoritmo chega ao fim.
             \item Caso contrário, a máquina \textbf{A} envia um broadcast à rede
             buscando outros servidores de nomes, e inclui nessa mensagem qual nome
             ela quer traduzido (nome que originou todo o processo para a criação
             do servidor). Qualquer servidor de nomes que receber esse broadcast
-            deve guardar o IP e o nome da máquina \textbf{A} em sua tabela de
-            servidores de nomes conhecidos, e deve responder a ela em unicast com
-            seu próprio nome e IP. Caso algum servidor conheça a tradução do nome
-            buscado por \textbf{A}, deve incluir a tradução no unicast de resposta.
+            deve guardar o IP e o nome da máquina \textbf{A} em sua tabela de nomes,
+            associando a \textbf{A} um serviço de tradução de nomes, e deve
+            responder a ela em unicast com seu próprio nome e IP. Caso algum
+            servidor conheça a tradução do nome buscado por \textbf{A}, deve
+            incluir a tradução no unicast de resposta.
             \item Caso \textbf{A} descubra ser o único servidor de nomes na rede,
             ou não encontre a tradução do nome que procura, deve então enviar
             outro broadcast à rede com o nome buscado. Ao receber o pedido de
@@ -54,15 +58,9 @@ portanto seu desempenho não foi avaliado.
             para \textbf{A}, e \textbf{pode} então se tornar ela mesma um servidor
             de nomes (dependendo do seu nível de energia, por exemplo), visto que
             esse flood indica que não existem servidores de nomes próximos.
-            \item A cada intervalo de tempo \textbf{T}, o servidor \textbf{A}
-            verifica a vizinhança e atualiza sua tabela, deletando entradas expiradas
-            e inserindo as novas. A tabela de servidores não está sujeita a um TTL.
-            \item Quando uma máquina nova entra na rede, deve buscar um servidor
-            de DNS vizinho para informar seus dados e ser incluído na tabela de
-            tradução.
         \end{enumerate}
     
-    \subsection{Algoritmo de tradução de nomes}
+    \subsubsection{Algoritmo de tradução de nomes}
         \begin{enumerate}
             \item Dado que uma máquina \textbf{M} conhece um servidor de nomes
             \textbf{S} próximo a ela, e \textbf{M} quer a tradução de um nome,
@@ -71,14 +69,45 @@ portanto seu desempenho não foi avaliado.
             à \textbf{M}. Caso contrário, \textbf{S} envia um multicast à todos
             os servidores em sua tabela de servidores. Se algum outro servidor
             puder traduzir o nome, devolve essa resposta à \textbf{S}, que devolve
-            à \textbf{M}. Caso alguma máquina tenha deixado de ser servidor,
-            informa isso à \textbf{S}. Todo servidor que não for capaz de traduzir
-            o nome, simplesmente ignora a mensagem de \textbf{S}.
+            à \textbf{M}. Caso alguma máquina tenha deixado de ser servidor mas
+            ainda está na rede, informa isso à \textbf{S}. Todo servidor que não
+            for capaz de traduzir o nome, simplesmente ignora a mensagem de \textbf{S}.
             \item Se receber uma resposta do multicast, \textbf{S} a repassa à
-            \textbf{M}.
+            \textbf{M}, e o algoritmo acaba.
             \item Se não receber resposta, \textbf{S} inicia um broadcast buscando
-            pela tradução. Ao ser atingida pelo broadcast, a máquina buscada
+            pela tradução. 
+            \item Se existir, ao ser atingida pelo broadcast, a máquina buscada
             responde em unicast à \textbf{S}, e, como já descrito anteriormente,
-            pode se tornar um servidor de nomes, dependendo do seu nível de energia.
+            pode se tornar um servidor de nomes. Como o nome não é único, pode
+            haver mais de uma resposta. \textbf{S} deverá retornar todos os
+            resultados obtivos à \textbf{M} e então o algoritmo acaba.
+            \item Se não obtiver resposta, \textbf{S} retorna à \textbf{M} uma
+            lista vazia, e o algoritmo acaba.
         \end{enumerate}
+
+\subsection{Conflitos de nomes}
+    Diferente de outras implementações do DNS, os nomes não precisam ser únicos
+    no FDNS-SD. Uma tradução pode ser mais do que converter um nome em um endereço.
+    Devido a essa característica, não existe conflito de nomes, e uma tradução pode
+    ser feita usando um dos seguintes critérios:
     
+    \begin{itemize}
+        \item Nome
+        \item Serviço oferecido
+        \item Lista de serviços oferecidos
+        \item Nome e serviço oferecido
+        \item Nome e lista de serviços oferecidos
+        \item Endereço
+    \end{itemize}
+    
+    O resultado de qualquer tradução é sempre uma lista contendo os endereços
+    cujas características satisfaçam o critério de busca, exceto a busca por endereço
+    (conhecida no DNS como tradução reversa), cujo resultado deve ser o nome do
+    nó referenciado por aquele endereço e uma lista dos serviços oferecidos, ou
+    uma mensagem de erro caso o endereço buscado não exista.
+    
+\subsection{Regras de desconexão}
+    Toda informação que um servidor de nomes carrega pode ser facilmente recriada
+    a qualquer momento se necessário. Por esse motivo, o FDNS-SD não prevê nenhuma
+    regra para que um nó se desconecte da rede, não importanto a informação que
+    carrega.
