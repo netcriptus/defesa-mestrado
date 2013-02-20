@@ -9,7 +9,7 @@ forsure: all
 all: pdf
 	mv -f ${FILE}.pdf ${PDF} 
 	[ -d logs ] || mkdir logs
-	mv -f *.blg *.bbl *.aux *.log logs/
+	mv -f *.blg *.bbl *.aux *.log *.toc logs/
 
 pdf: bib
 	pdflatex ${FILE}
