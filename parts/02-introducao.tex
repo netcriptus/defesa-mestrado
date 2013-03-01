@@ -1,0 +1,68 @@
+O avanço nas pesquisas de protocolos tem conferido mais confiabilidade e segurança
+para redes MANET, permitindo a expansão de seu uso em vários níveis. Muitas das
+barreiras e desafios identificados na última década já foram superadas ou apresentaram
+uma melhora expressiva \cite{manet-state}.
+
+Os problemas de roteamento foram resolvidos por protocolos relativamente recentes
+como \textit{AdHoc On-Demand Distance Vector} (AODV) \cite{aodv} e
+\textit{Dynamic Source Routing} (DSR) \cite{dsr}. A Qualidade de Serviço é
+frequentemente abordada em vários novos protocolos, \cite{qos1} e \cite{qos2}
+demonstram algumas pesquisas nessa área. Segurança e consumo de energia são
+preocupações constantes na nova geração de protocolos, fazendo com que a rede
+evolua nesses aspectos a cada ano.
+
+\subsection{Problema}
+
+A evolução dos protocolos de tradução de nomes tem sido tímida nessa área. Do
+modo como foi projetado em 1987 \cite{rfc1035}, o protocolo original do DNS é
+altamente dependente de infraestrutura. Sua especificação prevê uma hierarquia rígida,
+sua segurança e confiabilidade parte do pressuposto de servidores estáveis e de
+uma rede com pouca volatilidade.
+
+Uma rede MANET elimina os principais elementos usados pelo DNS -- hierarquia em
+árvore, IP's fixos associados a nomes, servidores com muitos recursos e pouca
+quebra de links -- então é de se esperar que o protocolo em sua forma pura não
+seja o suficiente para esse ambiente.
+
+Diferente dos outros desafios descritos em \cite{manet-state}, não existe um
+protocolo oficial ou aproximação consensualmente melhor para o problema da
+resolução de nomes. Os principais protocolos que se propõe a executar a tarefa
+de tradução assumem pelo menos um dos elementos citados anteriormente -- em
+especial a presença de um servidor -- o que é prejudicial aos nodos na rede, ou
+ao menos prejudicial aos nodos escolhidos para serem servidores.
+
+\subsection{Objetivos}
+
+Para propor um protocolo de tradução de nomes em uma rede que não oferece nada
+da estrutura básica requerida pelo protocolo tradicional, é preciso uma nova
+abordagem. O novo protocolo precisa assumir que
+\begin{inparaenum}[(i)]
+    \item não existe servidor fixo permanente;
+    \item não existe hierarquia;
+    \item um nó, assim como a informação que ele carrega pode sumir a qualquer
+    instante;
+    \item espaço de armazenamento pode ser limitado (uma vez que podem existir
+    equipamentos com poucos recursos na rede);
+    \item o número de mensagens trocadas deve ser minimizado e broadcasts devem
+    ser evitados, visando economia de energia.
+\end{inparaenum}
+
+O protocolo proposto neste trabalho visa atender essas restrições e ser mais
+eficiente que seus predecessores \cite{mcdsn} \cite{dnssd} \cite{mdns} nas questões
+de consumo de energia e espaço de armazenamento utilizado. A segurança do protocolo
+no entanto está fora do escopo deste trabalho.
+
+\subsection{Estrutura da proposta}
+
+Este documento está organizado em quatro capítulos. O capítulo 2 analisa o estado
+dos protocolos que existem hoje para resolução de nomes em MANETS, explicando o
+funcionamento e apresentando os pontos fortes e fracos de cada protocolo.
+
+O terceiro capítulo descreve a proposta de um novo protocolo completamente
+distribuído para tradução de nomes e descoberta de serviços, incluindo os
+algoritmos das tarefas executadas e as possibilidades de traduções. Posteriormente
+algumas regras sobre conflitos de nomes e desconexão da rede são apresentadas.
+
+O último capítulo apresenta a estratégia proposta para testes. Esse capítulo
+explica o funcionamento da plataforma que será usada e por que foi escolhido um
+emulador de rede ao invés de um simulador.
