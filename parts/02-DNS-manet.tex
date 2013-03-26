@@ -23,6 +23,65 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
  protocolos estudados e qual a sua solução para os problemas descritos.
 
 \subsection{Context-Based Name Resolution Service}
+\label{context-based}
+
+    Apesar da falta de detalhes técnicos sobre a proposta, \cite{context-dns}
+    traz a proposta de um protocolo mais adequado às redes MANET. Como o nome
+    sugere, o \textit{Context-Based Resolution Service} é um protocolo que usa
+    informações de contexto para a tradução de nomes. O artigo define \emph{nome}
+    como a descrição de um objeto, e \emph{endereço} como a localização física do
+    objeto. Ao mapeamento do nome para o endereço dá-se o nome de \emph{resolução}.
+    
+    \cite{context-dns} ainda apresenta o conceito de \textit{namespaces}, que são
+    nomes válidos dentro de um certo contexto. Assim, uma aplicação pode reconhecer
+    um \textit{namespace} para vários contextos, vários \textit{namespaces} para
+    um contexto, ou um \textit{namespace} para um contexto (figura \ref{namespaces}).
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/contexts}
+        \caption{Contextos e \textit{namespaces}}
+        \label{namespaces}
+    \end{figure}
+    
+    Existem muitas sugestões no artigo sobre o que podem ser os contextos, mas a
+    solução mais recorrente no texto é o uso de sensores e observadores externos
+    para determinar o contexto da rede. Para obter um ambiente apropriado, a
+    criação de uma camada de descrição de contexto é citada; essa camada pode
+    fazer uso de ontologias que descrevem conceitos e relações entre objetos
+    em certos contextos. Os pré-requisitos para tal são
+    \begin{inparaenum}[(i)]
+        \item uma linguagem de descrição de ontologias,
+        \item um repositório,
+        \item um raciocinador, para interpretar as relações entre ontologias e
+        informações de contexto (\textit{tags}).
+    \end{inparaenum} 
+    Assim, de forma genérica, o processo de tradução ocorre em duas fases
+    (figura \ref{translation}), a primeira de obtenção de contexto, e a segunda
+    de tradução dentro do \textit{namespace} daquele contexto.
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/translation}
+        \caption{Tradução em duas fases}
+        \label{translation}
+    \end{figure}
+    
+    Mesmo definindo vários contextos e várias estratégias de tradução, o artigo
+    não especifica nenhum caso e nem onde os mapeamentos das traduções seriam
+    alocados na rede, nem como ou se a rede funcionaria dentro do princípio do
+    \textit{Zeroconf} \cite{zeroconf}. No entanto, o que os pré-requisitos dão
+    a entender é que dispositivos com baixo poder de memória e processamento
+    não são bem vindos na rede, e também fica claro que os autores exigem que
+    existam certas condições que podem não ser encontradas tão facilmente em
+    MANETs, como a existência de repositórios (uma vez que um repositório exige
+    um servidor confiável, e não se pode assumir confiabilidade em conexão entre
+    nós em uma rede MANET, como explicado no capítulo \ref{intro}).
+    
+    Por esses motivos, o \textit{Context-Based Name Resolution Service} proposto
+    por \cite{context-dns} pode não ser uma solução totalmente adequada à
+    redes MANET, apesar de representarem uma nova abordagem e considerável melhoria
+    do protocolo DNS \cite{rfc1035}.
 
 \subsection{Bonjour}
 \label{Bonjour}
