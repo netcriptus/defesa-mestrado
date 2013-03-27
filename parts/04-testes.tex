@@ -1,14 +1,31 @@
 %!TEX root = ../main.tex
 
-Para testar o \textit{FDNS-SD} em condições próximas às reais, será usado o
-\textit{Testbed} Orbit Lab \cite{orbit}. Operado e desenvolvido pelo laboratório
-\textit{WINLAB} \cite{winlab} da \textit{Rutgers University} em conjunto com
-\textit{Princeton} e \textit{Columbia University}, com apoio financeiro da
-\textit{National Science Foundation} (NSF), o Orbit Lab é um emulador de redes
-móveis, que conta com um grid bidimensional de 400 nós \textit{wireless} (802.11).
+Este capítulo descreve a metodologia a ser aplicada para avaliação do protocolo
+FDNS-SD. A seção \ref{ambiente} descreve o ambiente que será usado nos testes.
+A seção \ref{cenarios} define os cenários de teste.
 
-A rede do Orbit Lab está preparada para simular inclusive a movimentação dos nós,
-e pode emular diversas topologias. A vantagem de testar o protocolo nesse grid é
-que os dados coletados em questões como overhead e perda de pacotes são reais, e
-não simulados, e assim é possível verificar com mais confiabilidade o comportamento
-do protocolo.
+\section{Ambiente de desenvolvimento}
+\label{ambiente}
+
+    Apesar do software de testes mais utilizado para simulações de redes ser o
+    \textit{Network Simulator} (NS) versão 2, a opção para testar esse protocolo
+    foi outra. Para testar o \textit{FDNS-SD} em condições mais próximas às reais,
+    será usado o \textit{Testbed} Orbit Lab \cite{orbit}.
+    
+    Operado e desenvolvido pelo laboratório \textit{WINLAB} \cite{winlab} da
+    \textit{Rutgers University} em conjunto com \textit{Princeton} e
+    \textit{Columbia University}, com apoio financeiro da \textit{National
+    Science Foundation} (NSF), o Orbit Lab é um emulador de redes móveis, que
+    conta com um grid bidimensional de 400 nós \textit{wireless} (802.11).
+
+    A rede do Orbit Lab está preparada para simular inclusive a movimentação dos nós,
+    e pode emular diversas topologias. A vantagem de testar o protocolo nesse grid é
+    que os dados coletados em questões como overhead e perda de pacotes são reais, e
+    não simulados, e assim é possível verificar com mais confiabilidade o comportamento
+    do protocolo. O \textit{testbed} Orbit aceita apenas scripts escritos na linguagem
+    Ruby.
+
+\section{Cenários de avaliação e métricas de desempenho}
+
+    Albini, apesar de eu ter uma leve ideia das métricas, não pensei em cenários.
+    Podemos conversar sobre essa parte?
