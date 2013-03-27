@@ -22,7 +22,7 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
  identificador dentro de uma rede deve ser único. A seguir são descritos os 
  protocolos estudados e qual a sua solução para os problemas descritos.
 
-\subsection{Context-Based Name Resolution Service}
+\section{Context-Based Name Resolution Service}
 \label{context-based}
 
     Apesar da falta de detalhes técnicos sobre a proposta, \cite{context-dns}
@@ -76,14 +76,55 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     existam certas condições que podem não ser encontradas tão facilmente em
     MANETs, como a existência de repositórios (uma vez que um repositório exige
     um servidor confiável, e não se pode assumir confiabilidade em conexão entre
-    nós em uma rede MANET, como explicado no capítulo \ref{intro}).
+    nós em uma rede MANET, como explicado no capítulo \ref{intro}). Questões como
+    tratamento de conflito de nomes e regras de desconexão também não são tratados.
     
     Por esses motivos, o \textit{Context-Based Name Resolution Service} proposto
     por \cite{context-dns} pode não ser uma solução totalmente adequada à
     redes MANET, apesar de representarem uma nova abordagem e considerável melhoria
-    do protocolo DNS \cite{rfc1035}.
+    do protocolo DNS \cite{rfc1035} para MANETs.
 
-\subsection{Bonjour}
+\section{Link Local Multicast Name Resolution}
+
+    \textit{Link Local Multicast Name Resolution} (LLMNR) \cite{llmnr} é uma
+    extensão do DNS tradicional (DNSExt), e não se propõe a substituir por
+    completo o DNS. O LLMNR é limitado a pequenas redes, funciona sobre
+    \textit{peer-to-peer} (p2p), e sua especificação esclarece que deve ser usado
+    somente em situações em que o DNS não está disponível ou não é compatível.
+    
+    \cite{llmnr} sugere que a configuração dos servidores seja feita através de
+    DHCP4 ou DHCP6, mas também explica que esses não são os únicos métodos de
+    configurar os servidores. Qualquer nó da rede pode ser um servidor, mas não
+    existe obrigação para que nenhuma máquina o seja. As consultas de nomes são
+    feitas via broadcast (caso geral) ou unicast (caso em que um nó já conhece o
+    servidor autoritativo para o nome que procura), e a resposta é sempre em unicast.
+    
+    Conflitos de nomes são detectados através de queries normais de tradução. Se
+    um nó receber duas respostas diferentes de servidores diferentes para uma
+    requisição, esse nó deve reenviar essa requisição com um bit a mais ligado
+    no pacote, indicando que os servidores devem analisar essa consulta, e não
+    devem respondê-la. Servidores também podem verificar periodicamente se existe
+    duplicidade para os nomes nos quais são autoritativos, mas não existe
+    obrigatoriedade nem período máximo para essa tarefa.
+    
+    Uma vez detectado o conflito, os servidores autoritativos para aquele nome
+    devem tomar uma atitude para corrigir o problema. Se ambos os servidores
+    estiverem se declarando autoritativo para a mesma tradução, ou seja, ambos
+    estão mapeando o mesmo nome para o mesmo nó, é considerado que não há conflito,
+    mas apenas um deve continuar sendo autoritativo. Caso cada um dos servidores
+    esteja mapeando uma tradução diferente, cada um deles faz uma análise lexográfica
+    do IP de cada nó conflitante: o nó com IP lexograficamente menor (indicando
+    que ele está há mais tempo na rede) tem direito a usar aquele nome, e a
+    tradução que aponta para o nó com IP lexograficamente maior é ignorada. Um log
+    é gerado apontando a ação tomada, e esse nó pode ser manualmente reconfigurado
+    pelo administrador da rede.
+    
+    Como a própria especificação explica, essa solução não é um substituto para
+    o DNS. Apesar de oferecer quase todos os serviços disponibilizados pelo DNS
+    tradicional, o LLMNR se limita a redes pequenas, necessita de servidores e
+    assume que existe um nível mínimo de confiabilidade na rede.
+
+\section{Bonjour}
 \label{Bonjour}
 
     Criado pela \textit{Apple} primeiramente com o nome \textit{Rendezvous}, o 
@@ -94,7 +135,7 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     aberto, sua documentação é limitada, portanto as especificações descritas aqui
     são conclusões tiradas a partir de testes realizados com o protocolo.
   
-    \subsubsection{Multicast DNS}
+    \subsection{Multicast DNS}
     \label{MDNS}
   
         O protocolo \textit{Bonjour} é completamente reativo, e isso se aplica também
@@ -126,14 +167,20 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
 
         Essa abordagem funciona muito bem para redes pequenas, mas pode apresentar
         problemas de escalabilidade, não é apropriado para equipamentos com 
-        processamento e memória limitados. Por limitações nos testes, não sabemos
-        se esse protocolo funciona quando é necessário fazer roteamento, isto é,
-        quando a fonte e o destino das mensagens estão a mais de um salto de 
-        distância. O protocolo \textit{Bonjour} foi feito visando ambientes 
-        corporativos médios, por isso não existe a preocupação em escalabilidade.
+        processamento e memória limitados. Por limitações nos testes, não foi possível
+        descobrir se esse protocolo funciona quando é necessário fazer roteamento,
+        isto é, quando a fonte e o destino das mensagens estão a mais de um salto
+        de distância. O protocolo \textit{Bonjour} foi feito visando ambientes 
+        corporativos médios, por isso não existe a preocupação com escalabilidade.
+        
+        Pelo fato de definir todas as máquinas da rede como servidores, exigir um
+        anúncio periódico de serviços, e não estar preparado para lidar com conflitos
+        decorrentes da união de duas redes, o \textit{Bonjour} não é um protocolo
+        ideal para redes MANET, apesar de ser excelente para redes locais de pequeno
+        e médio porte com \textit{zeroconf}.
 
 
-\subsection{Modified Centralized DNS}
+\section{Modified Centralized DNS}
 \label{MCDNS}
 
     O \textit{Modified Centralized DNS}, ou \textit{Manet DNS}, como é referenciado
@@ -152,7 +199,19 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     anúncio por um período de tempo, interpreta que não existe mais Servidor de 
     Nomes em seu alcance, seja por quebra da rede -- pela mobilidade dos nós --,
     ou por que o antigo servidor foi desligado.
-  
+
+    Se um nó novo na rede ainda não sabe da existência de um servidor, deve enviar
+    um broadcast requisitando um servidor (figura \ref{centralized}). Se essa
+    consulta não revelar nenhum servidor de nomes, o nó se torna um servidor de
+    nomes.
+    
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/centralized}
+        \caption{Nó descobrindo presença de um servidor na rede}
+        \label{centralized}
+    \end{figure}
+
     Quando um NS é criado, a máquina que vai se tornar servidor envia um 
     \textit{broadcast} à rede pedindo que todas as máquinas lhe enviem suas 
     informações. As outras máquinas da rede respondem a essa requisição com seu 
@@ -167,7 +226,7 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     chegar a um consenso sobre qual máquina vai continuar com o serviço de tradução
     de nomes. Essa decisão se dá comparando os IP's dos servidores; assim definindo
     qual tem maior prioridade sobre os demais. O servidor com maior prioridade recebe
-    a tabela de tradução de nomes dos servidores com menos prioridade, e deve resolver
+    a tabela de tradução de nomes dos servidores com menor prioridade, e deve resolver
     eventuais conflitos de nomes que essa fusão possa causar.
   
     Se uma máquina \textbf{A}, após conseguir a tradução de uma máquina \textbf{B},
@@ -182,3 +241,8 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     gerado por mensagens de controle. No entando os números sobre o consumo de 
     energia do servidor não estão disponíveis, e o tempo de execução da simulação
     -- 100 segundos -- é considerado pequeno para esse tipo de teste.
+    
+    Ainda, essa esse protocolo pode não ser adequado para redes com dispositivos
+    limitados. Um único servidor, além de representar um ponto único de falha,
+    pode também ser um gargalo no caso da rede ser muito ativa, e a bateria do
+    dispositivo escolhido como servidor pode ser consumida em um curto tempo.
