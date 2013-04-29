@@ -1,6 +1,6 @@
 %!TEX root = ../main.tex
 
-Com base nos protocolos usados nas redes MANET atuais, propomos um protocolo
+Com base nos protocolos usados nas redes MANET atuais, este trabalho propõe um protocolo
 completamente distribuído, que trata a tradução de nomes como um serviço na rede
 em que está inserido. Esse protocolo, \textit{FDNS-SD} -- 
 \textit{Fully Distributed Name Service - Service Discovery} --, atua tanto em
@@ -11,10 +11,15 @@ e a terminologia usada. O protocolo sendo descrito ainda é puramente teórico,
 portanto seu desempenho não foi avaliado.
 
 \section{Especificações}
+	Este capítulo é dedicado às definições de conceitos e nomenclaturas usados pelo
+	\textit{FDNS-SD}, e suas regras de funcionamento. Inicialmente alguns nomes
+	importantes para o protocolo são apresentados, e em seguida os algoritmos do
+	protocolo são apresentados.
+	
     \subsection{Conceitos iniciais}
         \begin{enumerate}
-            \item Vizinhança -- quase todos os floods realizados pelo FDNS-SD são
-            controlados. Inicialmente é definido um número máximo de saltos; as
+            \item \label{vizinhanca} Vizinhança -- quase todas as inundações realizadas pelo FDNS-SD são
+            controladas. Inicialmente é definido um número máximo de saltos; as
             máquinas  encontradas dentro desse limite constituem a vi\-zi\-nhan\-ça
             de um nó.
             \item Servidor de nomes -- são máquinas que oferecem o serviço de
@@ -34,7 +39,7 @@ portanto seu desempenho não foi avaliado.
     \subsection{Algoritmo de criação de servidores}
         \begin{enumerate}
             \item Quando uma máquina \textbf{A} precisa traduzir um nome, ela
-            busca em sua vizinhança se existe algum servidor de nomes. Se existir,
+            busca em sua vizinhança \ref{vizinhanca} se existe algum servidor de nomes. Se existir,
             ela usa esse servidor.
             \item Caso não exista servidor, essa máquina \textbf{A} torna-se um 
             servidor de nomes.

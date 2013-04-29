@@ -26,7 +26,7 @@ padrões de comunicação sem fio presentes na camada de enlace são utilizados,
 como o IEEE 802.11 \cite{802-11}, o IEEE 802.15.4 \cite{802-15}, o IEEE 802.16
 \cite{802-16} e o IEEE 802.22 \cite{802-22}.
 
-A evolução dos protocolos de tradução de nomes tem sido tímida em MANETs. Do
+Entretanto, a evolução dos protocolos de tradução de nomes tem sido tímida em MANETs. Do
 modo como foi projetado em 1987 \cite{rfc1035}, o protocolo original do DNS é
 altamente dependente de infraestrutura. Sua especificação prevê uma hierarquia rígida,
 sua segurança e confiabilidade parte do pressuposto de servidores estáveis e de
@@ -52,7 +52,7 @@ que, apesar de serem servidores, não necessariamente traduzem nomes, e a IANA n
 regulamenta um número mínimo de redundância sobre eles. Um domínio qualificado é
 um caminho reverso dos rótulos de um subdomínio até a raiz.
 
-A configuração de cada um desses servidores (tanto TLDs quanto SLDs) é feita por
+A configuração de cada um desses servidores (tanto TLDs quanto SLDs) é feita através de
 um arquivo que contém todos os nomes, traduções e configurações daquela zona -- 
 isto é, o nó raiz precisa saber as traduções para todos os nós nos TLDs, cada nó
 TLD é responsável pelos SLDs abaixo dele, e cada SLD é responsável pelos próprios
@@ -101,7 +101,7 @@ no entanto está fora do escopo deste trabalho.
 
 Alguns conceitos introduzidos na especificação \cite{rfc1035} foram utilizados no
 protocolo proposto, batizado de \textit{Fully Distributed Name Service - Service
-Discovery} (FDNS-SD), como tradução reversa, tipos de registros (apesar de utilizar
+Discovery} (FDNS-SD). Como exemplo, tradução reversa, tipos de registros (apesar de utilizar
 diferentes tipos) e resolução recursiva de nomes -- isto é, o nó que pediu a
 tradução recebe uma resposta ou uma mensagem de erro, em contrapartida à resolução
 iterativa, em que o nó solicitante pode receber um novo endereço para enviar uma
@@ -127,17 +127,14 @@ fato, a própria tradução de nomes é tratada como mais um serviço disponíve
 FDNS-SD propõe uma nova visão sobre o serviço de nomes, pretendendo deixá-lo mais
 adequado às restrições e exigências de uma MANET.
 
-\section{Estrutura da proposta}
 
 Este documento está organizado em quatro capítulos. O capítulo 2 analisa o estado
 dos protocolos que existem hoje para resolução de nomes em MANETS, explicando o
 funcionamento e apresentando os pontos fortes e fracos de cada protocolo.
-
 O terceiro capítulo descreve a proposta de um novo protocolo completamente
 distribuído para tradução de nomes e descoberta de serviços, incluindo os
 algoritmos das tarefas executadas e as possibilidades de traduções. Posteriormente
 algumas regras sobre conflitos de nomes e desconexão da rede são apresentadas.
-
 O último capítulo apresenta a estratégia proposta para testes. Esse capítulo
 explica o funcionamento da plataforma que será usada e por que foi escolhido um
 emulador de rede ao invés de um simulador.

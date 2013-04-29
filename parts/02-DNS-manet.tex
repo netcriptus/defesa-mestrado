@@ -1,7 +1,7 @@
 %!TEX root = ../main.tex
 
 Apesar do esforço dispendido em pesquisas sobre o \textit{DNS} para redes 
-\textit{MANET}, ainda não existe concenso sobre qual o melhor modelo a ser 
+\textit{MANET}, ainda não existe consenso sobre qual o melhor modelo a ser 
 adotado. Enquanto que algumas propostas exigem modificações drásticas no 
 protocolo de resolução de nomes já existente -- impedindo assim que 
 implementações atuais possam ser reutilizadas -- outras deixam muito a desejar 
@@ -72,11 +72,11 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     alocados na rede, nem como ou se a rede funcionaria dentro do princípio do
     \textit{Zeroconf} \cite{zeroconf}. No entanto, o que os pré-requisitos dão
     a entender é que dispositivos com baixo poder de memória e processamento
-    não são bem vindos na rede, e também fica claro que os autores exigem que
+    não são bem vindos na rede. Também fica claro que os autores exigem que
     existam certas condições que podem não ser encontradas tão facilmente em
-    MANETs, como a existência de repositórios (uma vez que um repositório exige
+    MANETs, como a existência de repositórios. Uma vez que um repositório exige
     um servidor confiável, e não se pode assumir confiabilidade em conexão entre
-    nós em uma rede MANET, como explicado no capítulo \ref{intro}). Questões como
+    nós em uma rede MANET, como explicado no capítulo \ref{intro}. Questões como
     tratamento de conflito de nomes e regras de desconexão também não são tratados.
     
     Por esses motivos, o \textit{Context-Based Name Resolution Service} proposto
@@ -147,8 +147,9 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
         (\textit{DNS--SD}) \cite{dnssd}. Caso o nome escolhido pela nova máquina 
         já exista na rede, essa máquina tem um número adicionado ao final do seu 
         nome. Por exemplo, se um nó tenta entrar na rede com o nome \emph{foo}, mas
-        esse nome já está em uso, uma mensagem é enviada a essa máquina avisando 
-        que seu nome está sendo alterado para \emph{foo1}.
+        esse nome já está em uso, uma máquina que já pertence à rede (e atua como
+		\textit{bootstrap} envia uma mensagem a essa nova máquina avisando que seu
+		nome está sendo alterado para \emph{foo1}.
 
         Uma máquina nova na rede tem sua tabela de tradução vazia, e quando 
         precisar de algum nome ou serviço envia sua requisição para toda a rede,
@@ -166,7 +167,7 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
         e nomes de máquinas que não estão mais na rede persistem indefinidamente.
 
         Essa abordagem funciona muito bem para redes pequenas, mas pode apresentar
-        problemas de escalabilidade, não é apropriado para equipamentos com 
+        problemas de escalabilidade, não é apropriada para equipamentos com 
         processamento e memória limitados. Por limitações nos testes, não foi possível
         descobrir se esse protocolo funciona quando é necessário fazer roteamento,
         isto é, quando a fonte e o destino das mensagens estão a mais de um salto
@@ -242,7 +243,7 @@ uma rede. O terceiro caso a ser tratado é o conflito de nomes -- que no caso de
     energia do servidor não estão disponíveis, e o tempo de execução da simulação
     -- 100 segundos -- é considerado pequeno para esse tipo de teste.
     
-    Ainda, essa esse protocolo pode não ser adequado para redes com dispositivos
+    Ainda, esse protocolo pode não ser adequado para redes com dispositivos
     limitados. Um único servidor, além de representar um ponto único de falha,
     pode também ser um gargalo no caso da rede ser muito ativa, e a bateria do
     dispositivo escolhido como servidor pode ser consumida em um curto tempo.
