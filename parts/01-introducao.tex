@@ -1,6 +1,6 @@
 \label{intro}
 
-Redes Adhoc Móveis (\textit{MANETs}) são especialmente notáveis pela sua capacidade
+Redes ad hoc Móveis (\textit{Mobile Ad hoc Networks -- MANETs}) são especialmente notáveis pela sua capacidade
 de auto-organização e auto-configuração. Por definição, MANETs não contam com
 estruturas fixas, sendo compostas por nós móveis tais como celulares, PDAs,
 tablets e laptops, que se comunicam exclusivamente com tecnologia sem fio. Serviços
@@ -10,26 +10,26 @@ os serviços. A utilidade desse tipo de rede vai desde serviços militares até 
 de emergência e resgate \cite{manet-def}.
 
 O avanço nas pesquisas de protocolos tem conferido mais confiabilidade e segurança
-para redes MANET, permitindo a expansão de seu uso em vários níveis. Muitas das
-barreiras e desafios identificados na última década já foram superadas ou apresentaram
+para MANETs, permitindo a expansão de seu uso em vários níveis. Muitas das
+barreiras e desafios identificados na última década já foram superados ou apresentaram
 uma melhora expressiva \cite{manet-state}.
 
 Os problemas de roteamento foram resolvidos por protocolos relativamente recentes
-como \textit{AdHoc On-Demand Distance Vector} (AODV) \cite{aodv} e
+como \textit{ad hoc On-Demand Distance Vector} (AODV) \cite{aodv} e
 \textit{Dynamic Source Routing} (DSR) \cite{dsr}, permitindo que a transmissão de
 mensagens ocorra em redes que exigem multi-salto. A Qualidade de Serviço é
-frequentemente abordada em vários novos protocolos, \cite{qos1} e \cite{qos2}
-demonstram algumas pesquisas nessa área. Segurança e consumo de energia são
-preocupações constantes na nova geração de protocolos, fazendo com que a rede
-evolua nesses aspectos a cada ano. No quesito controle de acesso ao meio, os
-padrões de comunicação sem fio presentes na camada de enlace são utilizados,
+frequentemente abordada em vários novos protocolos, exemplos de pesquisas nesta
+área podem ser encontrados em\cite{qos1} e \cite{qos2}. Segurança e consumo de
+energia são preocupações constantes na nova geração de protocolos, fazendo com
+que a rede evolua nesses aspectos a cada ano. No quesito controle de acesso ao
+meio, são utilizados os padrões de comunicação sem fio presentes na camada de enlace,
 como o IEEE 802.11 \cite{802-11}, o IEEE 802.15.4 \cite{802-15}, o IEEE 802.16
 \cite{802-16} e o IEEE 802.22 \cite{802-22}.
 
 Entretanto, a evolução dos protocolos de tradução de nomes tem sido tímida em MANETs. Do
 modo como foi projetado em 1987 \cite{rfc1035}, o protocolo original do DNS é
-altamente dependente de infraestrutura. Sua especificação prevê uma hierarquia rígida,
-sua segurança e confiabilidade parte do pressuposto de servidores estáveis e de
+altamente dependente de uma infraestrutura. Sua especificação prevê uma hierarquia rígida.
+Sua segurança e confiabilidade parte do pressuposto de servidores estáveis e de
 uma rede com pouca volatilidade.
 
 \begin{figure}[h!]
@@ -49,27 +49,27 @@ conta com pelo menos outros dois servidores secundários. Abaixo dos TLDs estão
 os \textit{Second Level Domains} (SLDs), que são subordinados aos TLDs e também
 precisam ter pelo menos um servidor de redundância. Abaixo deles estão os subdomínios,
 que, apesar de serem servidores, não necessariamente traduzem nomes, e a IANA não
-regulamenta um número mínimo de redundância sobre eles. Um domínio qualificado é
-um caminho reverso dos rótulos de um subdomínio até a raiz.
+regulamenta um número mínimo de redundância sobre eles. Um caminho reverso do
+rótulo de um subdomínio até a raiz é chamado de domínio qualificado.
 
 A configuração de cada um desses servidores (tanto TLDs quanto SLDs) é feita através de
 um arquivo que contém todos os nomes, traduções e configurações daquela zona -- 
-isto é, o nó raiz precisa saber as traduções para todos os nós nos TLDs, cada nó
+isto é, o nó raiz precisa saber as traduções para todos os TLDs, cada nó
 TLD é responsável pelos SLDs abaixo dele, e cada SLD é responsável pelos próprios
-subdomínios. O arquivo de configurações é chamado de \textit{Masterfile} e precisa
+subdomínios. O arquivo de configuração é chamado de \textit{Masterfile} e precisa
 ter todas as informações dos subdomínios sobre os quais é responsável. Qualquer
 mudança nos registros de tradução pode demorar até 24 horas para ser propagado,
 devido à natureza estática do \textit{Masterfile}.
 
 Uma rede MANET elimina os principais elementos usados pelo DNS -- hierarquia em
 árvore, IP's fixos associados a nomes, servidores com muitos recursos e pouca
-quebra de links -- então é de se esperar que o protocolo original em sua forma
+quebra de enlaces -- então é de se esperar que o protocolo original em sua forma
 pura como definido em \cite{rfc1035} não seja o suficiente para esse ambiente.
 
 Diferente dos outros desafios descritos em \cite{manet-state}, não existe um
 protocolo oficial ou abordagem consensualmente melhor para o problema da
-resolução de nomes. Os principais protocolos que se propõe a executar a tarefa
-de tradução assumem pelo menos um dos elementos citados anteriormente -- em
+resolução de nomes em MANETs. Os principais protocolos que se propõe a executar
+a tarefa de tradução assumem pelo menos um dos elementos citados anteriormente -- em
 especial a presença de pelo menos um servidor -- o que é prejudicial aos nodos
 na rede, ou ao menos prejudicial aos nodos escolhidos para serem servidores.
 
@@ -99,18 +99,19 @@ no entanto está fora do escopo deste trabalho.
     \label{consultas}
 \end{figure}
 
-Alguns conceitos introduzidos na especificação \cite{rfc1035} foram utilizados no
-protocolo proposto, batizado de \textit{Fully Distributed Name Service - Service
-Discovery} (FDNS-SD). Como exemplo, tradução reversa, tipos de registros (apesar de utilizar
-diferentes tipos) e resolução recursiva de nomes -- isto é, o nó que pediu a
-tradução recebe uma resposta ou uma mensagem de erro, em contrapartida à resolução
-iterativa, em que o nó solicitante pode receber um novo endereço para enviar uma
-nova solicitação de requisição (figura \ref{consultas}).
+Alguns conceitos introduzidos na especificação do DNS para redes tradicionais
+(\cite{rfc1035}) foram utilizados no protocolo proposto, batizado de \textit{Fully
+Distributed Name Service - Service Discovery} (FDNS-SD). Como exemplo, tradução
+reversa, tipos de registros (apesar de utilizar diferentes tipos) e resolução
+recursiva de nomes -- isto é, o nó que pediu a tradução recebe uma resposta ou uma
+mensagem de erro, em contrapartida à resolução iterativa, em que o nó solicitante
+pode receber um novo endereço para enviar uma nova solicitação de requisição
+(figura \ref{consultas}).
 
 Outros conceitos definidos por \cite{rfc1035} foram descartados por se mostrarem
 inapropriados ao tipo de rede na qual estão inseridos. Como a rede é dinâmica e
 intrinsicamente volátil, não faz sentido usar um arquivo de configuração estático
-como o \textit{Masterfile}. De fato, uma das características das redes MANET é a
+como o \textit{Masterfile}. De fato, uma das características das MANETs é a
 auto-configuração, portanto o conceito mais natural para ser usado no protocolo
 é o \textit{Zeroconf} \cite{zeroconf}. A hierarquia em árvore, por exigir servidores
 confiáveis e com muitos recursos, também foi descartada para a construção do
@@ -122,7 +123,7 @@ no qual o protocolo pretende atuar. A exemplo, o conceito de tipos de registros.
 Na definição do DNS são descritos os tipos de registros, e em cada consulta é
 possível especificar o tipo que é desejado na resposta, como tipo A para endereços,
 MX para servidores de e-mail e PTR para ponteiros para outros servidores \cite{rfc1035}.
-Esses tipos serão usados no FDNS-SD para possibilitar descoberta de serviço; de
+Esses tipos serão usados no FDNS-SD para descoberta de serviço; de
 fato, a própria tradução de nomes é tratada como mais um serviço disponível. O
 FDNS-SD propõe uma nova visão sobre o serviço de nomes, pretendendo deixá-lo mais
 adequado às restrições e exigências de uma MANET.
