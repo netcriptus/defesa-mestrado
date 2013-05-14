@@ -128,6 +128,17 @@ fato, a própria tradução de nomes é tratada como mais um serviço disponíve
 FDNS-SD propõe uma nova visão sobre o serviço de nomes, pretendendo deixá-lo mais
 adequado às restrições e exigências de uma MANET.
 
+Os conceitos de \textit{Zeroconf} podem ser a solução mais natural ao problema
+apresentado. O \textit{Zeroconf} é construído em 3 tecnologias bases: distribuição
+de endereços numéricos a dispositivos na rede, distribuição e resolução automática
+de nomes de dispositivos, e localização automática de serviços na rede. Uma das
+implementações mais famosas de \textit{Zeroconf} é o \textit{Bonjour} (capítulo \ref{Bonjour}),
+desenvolvido pela \textit{Apple} para o seu Mac OS X, e posteriormente portado
+para outras plataformas. Também existem implementações nativas em outras
+plataformas, como \textit{Avahi}, para Linux e BSD. Do modo como existe hoje, o
+\textit{Zeroconf} não é o suficiente para redes muito grandes (mais detalhes no
+capítulo \ref{Bonjour}), mas se destaca em redes de pequeno e médio porte.
+
 
 Este documento está organizado em quatro capítulos. O capítulo 2 analisa o estado
 dos protocolos que existem hoje para resolução de nomes em MANETS, explicando o

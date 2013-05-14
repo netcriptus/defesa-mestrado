@@ -1,20 +1,18 @@
 %!TEX root = ../main.tex
 
-Com base nos protocolos usados nas redes MANET atuais, este trabalho propõe um protocolo
+Com base nos protocolos usados atualmente nas MANETs, este trabalho propõe um protocolo
 completamente distribuído, que trata a tradução de nomes como um serviço na rede
 em que está inserido. Esse protocolo, \textit{FDNS-SD} -- 
-\textit{Fully Distributed Name Service - Service Discovery} --, atua tanto em
-tradução de nomes quanto em descoberta de serviço.
+\textit{Fully Distributed Name Service - Service Discovery} --, atua tanto na
+tradução de nomes quanto na descoberta de serviço.
 
 Este capítulo descreve o funcionamento do \textit{FDNS-SD}, bem como os conceitos
-e a terminologia usada. O protocolo sendo descrito ainda é puramente teórico,
-portanto seu desempenho não foi avaliado.
+e a terminologia usada. O protocolo sendo descrito ainda não teve seu desempenho
+avaliado.
 
 \section{Especificações}
 	Este capítulo é dedicado às definições de conceitos e nomenclaturas usados pelo
-	\textit{FDNS-SD}, e suas regras de funcionamento. Inicialmente alguns nomes
-	importantes para o protocolo são apresentados, e em seguida os algoritmos do
-	protocolo são apresentados.
+	\textit{FDNS-SD}, e suas regras de funcionamento.
 	
     \subsection{Conceitos iniciais}
         \begin{enumerate}
@@ -22,7 +20,7 @@ portanto seu desempenho não foi avaliado.
             controladas. Inicialmente é definido um número máximo de saltos; as
             máquinas  encontradas dentro desse limite constituem a vi\-zi\-nhan\-ça
             de um nó.
-            \item Servidor de nomes -- são máquinas que oferecem o serviço de
+            \item Servidores de nomes -- são máquinas que oferecem o serviço de
             tradução de nomes. A tradução é um serviço como qualquer outro na rede.
             Os servidores de nomes do FDNS-SD guardam o mínimo de informação
             necessária, de modo que essa informação possa ser recriada se necessário.
@@ -37,9 +35,11 @@ portanto seu desempenho não foi avaliado.
         \end{enumerate}
         
     \subsection{Algoritmo de criação de servidores}
+        Para criar um servidor de nomes na rede, quer já exista algum ou não, os
+        passos a seguir são executados.
         \begin{enumerate}
             \item Quando uma máquina \textbf{A} precisa traduzir um nome, ela
-            busca em sua vizinhança \ref{vizinhanca} se existe algum servidor de nomes. Se existir,
+            busca em sua vizinhança se existe algum servidor de nomes. Se existir,
             ela usa esse servidor.
             \item Caso não exista servidor, essa máquina \textbf{A} torna-se um 
             servidor de nomes.
@@ -48,52 +48,47 @@ portanto seu desempenho não foi avaliado.
             servidor de nomes por um tempo \textbf{T}. Se o nome buscado por
             \textbf{A} for encontrado, o algoritmo chega ao fim.
             \item Caso contrário, a máquina \textbf{A} envia um broadcast à rede
-            buscando outros servidores de nomes, e inclui nessa mensagem qual nome
-            ela quer traduzido (nome que originou todo o processo para a criação
-            do servidor). Qualquer servidor de nomes que receber esse broadcast
+            buscando outros servidores de nomes e inclui nessa mensagem qual nome
+            ela quer traduzir. Qualquer servidor de nomes que receba esse broadcast
             deve guardar o IP e o nome da máquina \textbf{A} em sua tabela de nomes,
-            associando a \textbf{A} um serviço de tradução de nomes, e deve
+            associando a \textbf{A} um serviço de tradução de nomes e deve
             responder a ela em unicast com seu próprio nome e IP. Caso algum
             servidor conheça a tradução do nome buscado por \textbf{A}, deve
-            incluir a tradução no unicast de resposta.
-            \item Caso \textbf{A} descubra ser o único servidor de nomes na rede,
-            ou não encontre a tradução do nome que procura, deve então enviar
-            outro broadcast à rede com o nome buscado. Ao receber o pedido de
-            tradução, a máquina com o nome procurado envia o seu IP em unicast
-            para \textbf{A}, e \textbf{pode} então se tornar ela mesma um servidor
-            de nomes (dependendo do seu nível de energia, por exemplo), visto que
-            esse flood indica que não existem servidores de nomes próximos.
+            incluir a tradução no unicast de resposta. quando \textbf{A}
+            receber essa requisição, também deve responder em unicast.
         \end{enumerate}
     
     \subsection{Algoritmo de tradução de nomes}
+        O seguinte algoritmo descreve como é o processo de tradução de nomes.
         \begin{enumerate}
             \item Dado que uma máquina \textbf{M} conhece um servidor de nomes
-            \textbf{S} próximo a ela, e \textbf{M} quer a tradução de um nome,
-            então \textbf{M} envia à \textbf{S} um pedido de tradução.
-            \item Caso \textbf{S} conheça a tradução pedida, devolve essa resposta
-            à \textbf{M}. Caso contrário, \textbf{S} envia um multicast à todos
-            os servidores em sua tabela de servidores. Se algum outro servidor
-            puder traduzir o nome, devolve essa resposta à \textbf{S}, que devolve
+            \textbf{A} próximo a ela e \textbf{M} quer a tradução de um nome,
+            então \textbf{M} envia à \textbf{A} um pedido de tradução.
+            \item Caso \textbf{A} conheça a tradução pedida, devolve essa resposta
+            à \textbf{M}. Caso contrário, \textbf{A} envia um multicast à todos
+            os servidores em sua tabela de servidores (ou um unicast para cada
+            servidor). Se algum outro servidor
+            puder traduzir o nome, devolve essa resposta à \textbf{A}, que devolve
             à \textbf{M}. Caso alguma máquina tenha deixado de ser servidor mas
-            ainda está na rede, informa isso à \textbf{S}. Todo servidor que não
+            ainda está na rede, informa isso à \textbf{A}. Todo servidor que não
             for capaz de traduzir o nome, simplesmente ignora a mensagem de \textbf{S}.
-            \item Se receber uma resposta do multicast, \textbf{S} a repassa à
-            \textbf{M}, e o algoritmo acaba.
-            \item Se não receber resposta, \textbf{S} inicia um broadcast buscando
+            \item Se receber uma resposta do multicast, \textbf{A} a repassa à
+            \textbf{M} e o algoritmo acaba.
+            \item Se não receber resposta, \textbf{A} inicia um broadcast buscando
             pela tradução. 
             \item Se existir, ao ser atingida pelo broadcast, a máquina buscada
-            responde em unicast à \textbf{S}, e, como já descrito anteriormente,
+            responde em unicast à \textbf{A} e
             pode se tornar um servidor de nomes. Como o nome não é único, pode
-            haver mais de uma resposta. \textbf{S} deverá retornar todos os
+            haver mais de uma resposta. \textbf{A} deverá retornar todos os
             resultados obtivos à \textbf{M} e então o algoritmo acaba.
-            \item Se não obtiver resposta, \textbf{S} retorna à \textbf{M} uma
+            \item Se não obtiver resposta, \textbf{A} retorna à \textbf{M} uma
             lista vazia, e o algoritmo acaba.
         \end{enumerate}
 
 \section{Conflitos de nomes}
     Diferente de outras implementações do DNS, os nomes não precisam ser únicos
     no FDNS-SD. Uma tradução pode ser mais do que converter um nome em um endereço.
-    Devido a essa característica, não existe conflito de nomes, e uma tradução pode
+    Devido a essa característica, não existe conflito de nomes e uma tradução pode
     ser feita usando um dos seguintes critérios:
     
     \begin{itemize}
@@ -106,10 +101,11 @@ portanto seu desempenho não foi avaliado.
     \end{itemize}
     
     O resultado de qualquer tradução é sempre uma lista contendo os endereços
-    cujas características satisfaçam o critério de busca, exceto a busca por endereço
+    cujas características satisfaçam o critério de busca. Exceto a busca por endereço
     (conhecida no DNS como tradução reversa \cite{rfc1035}), cujo resultado deve
     ser o nome do nó referenciado por aquele endereço e uma lista dos serviços
-    oferecidos, ou uma mensagem de erro caso o endereço buscado não exista.
+    oferecidos. Caso o endereço buscado reversamente não exista, uma mensagem de
+    erro é retornada.
     
 \section{Regras de desconexão}
     Toda informação que um servidor de nomes carrega pode ser facilmente recriada
@@ -119,5 +115,5 @@ portanto seu desempenho não foi avaliado.
     
     A ausência de um nó não precisa ser anunciada na rede. Assim como no
     \textit{Bonjour} \cite{mdns}, explicado no capítulo \ref{Bonjour}, a rede
-    deve perceber de forma reativa a quebra de um link e decorrente indisponibilidade
+    deve perceber de forma reativa a quebra de um enlace e decorrente indisponibilidade
     dos serviços oferecidos por aquele nó.
