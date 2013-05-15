@@ -1,6 +1,6 @@
 \label{intro}
 
-Redes ad hoc Móveis (\textit{Mobile Ad hoc Networks -- MANETs}) são especialmente notáveis pela sua capacidade
+Redes Ad Hoc Móveis (\textit{Mobile Ad hoc Networks -- MANETs}) são especialmente notáveis pela sua capacidade
 de auto-organização e auto-configuração. Por definição, MANETs não contam com
 estruturas fixas, sendo compostas por nós móveis tais como celulares, PDAs,
 tablets e laptops, que se comunicam exclusivamente com tecnologia sem fio. Serviços
@@ -15,11 +15,11 @@ barreiras e desafios identificados na última década já foram superados ou apr
 uma melhora expressiva \cite{manet-state}.
 
 Os problemas de roteamento foram resolvidos por protocolos relativamente recentes
-como \textit{ad hoc On-Demand Distance Vector} (AODV) \cite{aodv} e
+como \textit{Ad Hoc On-Demand Distance Vector} (AODV) \cite{aodv} e
 \textit{Dynamic Source Routing} (DSR) \cite{dsr}, permitindo que a transmissão de
 mensagens ocorra em redes que exigem multi-salto. A Qualidade de Serviço é
 frequentemente abordada em vários novos protocolos, exemplos de pesquisas nesta
-área podem ser encontrados em\cite{qos1} e \cite{qos2}. Segurança e consumo de
+área podem ser encontrados em \cite{qos1} e \cite{qos2}. Segurança e consumo de
 energia são preocupações constantes na nova geração de protocolos, fazendo com
 que a rede evolua nesses aspectos a cada ano. No quesito controle de acesso ao
 meio, são utilizados os padrões de comunicação sem fio presentes na camada de enlace,
@@ -29,7 +29,7 @@ como o IEEE 802.11 \cite{802-11}, o IEEE 802.15.4 \cite{802-15}, o IEEE 802.16
 Entretanto, a evolução dos protocolos de tradução de nomes tem sido tímida em MANETs. Do
 modo como foi projetado em 1987 \cite{rfc1035}, o protocolo original do DNS é
 altamente dependente de uma infraestrutura. Sua especificação prevê uma hierarquia rígida.
-Sua segurança e confiabilidade parte do pressuposto de servidores estáveis e de
+Sua segurança e confiabilidade partem do pressuposto de servidores estáveis e de
 uma rede com pouca volatilidade.
 
 \begin{figure}[h!]
@@ -40,7 +40,7 @@ uma rede com pouca volatilidade.
 \end{figure}
 
 Como mostrado na figura \ref{dns}, o DNS foi especificado para usar servidores
-estáticos e confiáveis. A raiz dessa árvore é chamado de Servidor Raiz
+estáticos e confiáveis. A raiz dessa árvore é chamada de Servidor Raiz
 \cite{rfc1035}, e atualmente existem 13 cópias oficiais desse servidor espalhados
 pelo mundo para garantir redundância \cite{iana}. Abaixo da raiz estão os
 \textit{Top Level Domains} (TLDs); por motivos de segurança são exigidos pelo
@@ -58,7 +58,7 @@ isto é, o nó raiz precisa saber as traduções para todos os TLDs, cada nó
 TLD é responsável pelos SLDs abaixo dele, e cada SLD é responsável pelos próprios
 subdomínios. O arquivo de configuração é chamado de \textit{Masterfile} e precisa
 ter todas as informações dos subdomínios sobre os quais é responsável. Qualquer
-mudança nos registros de tradução pode demorar até 24 horas para ser propagado,
+mudança nos registros de tradução pode demorar até 24 horas para ser propagada,
 devido à natureza estática do \textit{Masterfile}.
 
 Uma rede MANET elimina os principais elementos usados pelo DNS -- hierarquia em
@@ -74,7 +74,7 @@ especial a presença de pelo menos um servidor -- o que é prejudicial aos nodos
 na rede, ou ao menos prejudicial aos nodos escolhidos para serem servidores.
 
 Para propor um protocolo de tradução de nomes em uma rede que não oferece nada
-da estrutura básica requerida pelo protocolo tradicional, é preciso uma nova
+da estrutura básica requerida pelo protocolo tradicional é preciso uma nova
 abordagem. O novo protocolo precisa assumir que
 \begin{inparaenum}[(i)]
     \item não existe servidor fixo permanente;
@@ -118,16 +118,6 @@ confiáveis e com muitos recursos, também foi descartada para a construção do
 FDNS-SD, e por consequência estruturas dependentes da árvore também foram eliminadas,
 como TLDs e SLDs.
 
-Existem conceitos ainda que foram modificados para se adaptarem ao novo ambiente
-no qual o protocolo pretende atuar. A exemplo, o conceito de tipos de registros.
-Na definição do DNS são descritos os tipos de registros, e em cada consulta é
-possível especificar o tipo que é desejado na resposta, como tipo A para endereços,
-MX para servidores de e-mail e PTR para ponteiros para outros servidores \cite{rfc1035}.
-Esses tipos serão usados no FDNS-SD para descoberta de serviço; de
-fato, a própria tradução de nomes é tratada como mais um serviço disponível. O
-FDNS-SD propõe uma nova visão sobre o serviço de nomes, pretendendo deixá-lo mais
-adequado às restrições e exigências de uma MANET.
-
 Os conceitos de \textit{Zeroconf} podem ser a solução mais natural ao problema
 apresentado. O \textit{Zeroconf} é construído em 3 tecnologias bases: distribuição
 de endereços numéricos a dispositivos na rede, distribuição e resolução automática
@@ -139,6 +129,15 @@ plataformas, como \textit{Avahi}, para Linux e BSD. Do modo como existe hoje, o
 \textit{Zeroconf} não é o suficiente para redes muito grandes (mais detalhes no
 capítulo \ref{Bonjour}), mas se destaca em redes de pequeno e médio porte.
 
+Existem conceitos ainda que foram modificados para se adaptarem ao novo ambiente
+no qual o protocolo pretende atuar. A exemplo, o conceito de tipos de registros.
+Na definição do DNS são descritos os tipos de registros, e em cada consulta é
+possível especificar o tipo que é desejado na resposta, como tipo A para endereços,
+MX para servidores de e-mail e PTR para ponteiros para outros servidores \cite{rfc1035}.
+Esses tipos serão usados no FDNS-SD para descoberta de serviço; de
+fato, a própria tradução de nomes é tratada como mais um serviço disponível. O
+FDNS-SD propõe uma nova visão sobre o serviço de nomes, pretendendo deixá-lo mais
+adequado às restrições e exigências de uma MANET.
 
 Este documento está organizado em quatro capítulos. O capítulo 2 analisa o estado
 dos protocolos que existem hoje para resolução de nomes em MANETS, explicando o

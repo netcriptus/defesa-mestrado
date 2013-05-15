@@ -2,6 +2,8 @@
 
 Este capítulo descreve a metodologia a ser aplicada para avaliação do protocolo
 FDNS-SD. A seção \ref{ambiente} descreve o ambiente que será usado nos testes.
+A sessão \ref{futuro} apresenta o cronograma com as tarefas e os passos futuros
+da proposta. A sessão \ref{conclusao} apresenta as considerações finais.
 
 \section{Ambiente de desenvolvimento}
 \label{ambiente}
@@ -23,3 +25,57 @@ FDNS-SD. A seção \ref{ambiente} descreve o ambiente que será usado nos testes
     não simulados, e assim é possível verificar com mais confiabilidade o comportamento
     do protocolo. O \textit{testbed} Orbit aceita apenas scripts escritos na linguagem
     Ruby.
+
+\section{Cronograma e passos futuros}
+\label{futuro}
+
+    O cronograma com as tarefas a serem executadas até a defesa da dissertação
+    é apresentado na tabela \ref{cronograma}. Cada passo é explicado em detalhes
+    a seguir.
+    
+    \begin{table}[t]\centering
+        \begin{tabular}{ | p{9cm} | c | c | c | c |}
+            \hline
+            \raggedleft{Atividade} & \begin{sideways}Maio\end{sideways}
+             & \begin{sideways}Junho\end{sideways}
+             & \begin{sideways}Julho\end{sideways}
+             & \begin{sideways}Agosto\end{sideways} \\ \hline
+            \raggedleft{Definição dos cenários e métricas para avaliação} & * & * &   &   \\ \hline
+            \raggedleft{Implementação do protocolo no Orbit Lab} &   & * & * &   \\ \hline
+            \raggedleft{Análise dos resultados} &   &   & * &   \\ \hline
+            \raggedleft{Escrita da dissertação} &   & * & * & * \\ \hline
+            \raggedleft{Apresentação da dissertação} &   &   &   & * \\ \hline
+        \end{tabular}
+        \caption{Cronograma proposto de atividades}
+        \label{cronograma}
+    \end{table}
+    
+    \begin{itemize}
+        \item Definição dos cenários e métricas para avaliação: serão definidos
+        sob quais aspectos e em quais situações o FDNS-SD deverá ser avaliado.
+        \item Implementação do protocolo no Orbit Lab: O FDNS-SD será implementado
+        no \textit{testbed} do Orbit Lab, descrito no capítulo \ref{ambiente}, e
+        executado para coleta de dados.
+        \item Análise dos resultados: depois de coletados os dados, serão gerados
+        comparativos em relação aos trabalhos relacionados citados nesse artigo,
+        de acordo com as métricas estabelecidas.
+        \item Escrita da dissertação: a escrita da dissertação ocorrerá em paralelo
+        à implementação do protocolo e coleta de dados, uma vez que novas informações
+        serão adicionadas nessas fases.
+        \item Apresentação da dissertação: apresentação dos resultados obtidos no
+        Orbit Lab, em comparação com os resultados obtidos nos trabalhos relacionados.
+    \end{itemize}
+
+\section{Considerações finais}
+\label{conclusao}
+
+    A tradução de nomes está entre as tecnologias que menos avançaram em relação
+    às MANETs. Os protocolos existentes na literatura não se mostram completamente
+    adaptados às demandas diferenciadas da rede e portanto sua eficiência é limitada.
+    O FDNS-SD apresenta uma nova abordagem ao problema, mas ainda necessita de
+    testes para medir o seu impacto em uma rede Ad Hoc móvel.
+    
+    O ambiente de testes escolhido é o mais próximo possível da realidade. Falta,
+    portanto, definir também cenários e métricas relevantes, que se aproximem de
+    situações médias e situações extremas encaradas por MANETs, para gerar dados
+    confiáveis sobre o impacto dessa nova abordagem na rede.
